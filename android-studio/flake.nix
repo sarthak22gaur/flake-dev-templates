@@ -1,5 +1,5 @@
 {
-  description = "Android development environment with SDK and NDK (optimized for Apple Silicon)";
+  description = "Android 34 Nix dev env (Apple Silicon, all stable dependencies, no duplicates)";
 
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
@@ -22,25 +22,38 @@
         default = pkgs.mkShell {
           packages = with pkgs; [
             (android-sdk (sdkPkgs: with sdkPkgs; [
+              # Core tools
               cmdline-tools-latest
-              build-tools-35-0-0
-              build-tools-34-0-0
+              build-tools-36-0-0
               platform-tools
-              platforms-android-35
-              platforms-android-34
+              platforms-android-36
+              sources-android-36
               emulator
-              ndk-27-0-12077973
+
+              # NDK & CMake (latest stable)
+              ndk-29-0-14033849
               cmake-3-22-1
-              # Native ARM system images for emulators:
-              system-images-android-35-google-apis-arm64-v8a
-              system-images-android-34-google-apis-arm64-v8a
+
+              # Extras for legacy & maven support
+              # extras-google-m2repository
+              # extras-android-m2repository
+
+              # --- SYSTEM IMAGES (ARM64, API 34) ---
+              # Default
+              # system-images-android-36-default-arm64-v8a
+              # Google APIs
+              # system-images-android-36-google-apis-arm64-v8a
+              # Google APIs Play Store
+              # system-images-android-36-google-apis-playstore-arm64-v8a
             ]))
           ];
 
           shellHook = ''
-            echo "Android development environment loaded"
-            echo "SDK location: $ANDROID_HOME"
-            echo "Available tools: adb, emulator, sdkmanager"
+            export ANDROID_HOME=$ANDROID_SDK_ROOT
+            export PATH=$ANDROID_SDK_ROOT/cmdline-tools/latest/bin:$ANDROID_SDK_ROOT/platform-tools:$PATH
+            echo "Android 34 Nix dev env loaded"
+            echo "SDK location: $ANDROID_SDK_ROOT"
+            echo "Available tools: adb, emulator, sdkmanager, avdmanager"
           '';
         };
       });

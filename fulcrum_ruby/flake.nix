@@ -19,10 +19,10 @@
       devShells = forEachSupportedSystem ({ pkgs, rubyPkgs }: {
         default = pkgs.mkShell {
           packages = with pkgs; [
-            # Use Ruby 3.3.0 from pinned Ruby-specific nixpkgs
             (rubyPkgs.ruby_3_3)
-            # Remove bundler from here as we'll install the specific version
-            libpq postgresql redis libxml2 libxslt zlib gcc xz libyaml pkg-config
+            libpq postgresql redis libxml2 libxslt zlib gcc xz libyaml
+            pkg-config
+            openssl   # <-- Add this line!
           ];
           shellHook = ''
             # Ensure Bundler installs gems into this project's vendor/bundle directory
@@ -31,6 +31,16 @@
             export GEM_PATH="$BUNDLE_PATH"
             export BUNDLE_BIN="$BUNDLE_PATH/bin"
             export PATH="$BUNDLE_BIN:$PATH"
+
+            # Make Puma and other gems see the right OpenSSL
+            export SSL_CERT_FILE=${pkgs.cacert}/etc/ssl/certs/ca-bundle.crt
+            export PKG_CONFIG_PATH="${pkgs.openssl.dev}/lib/pkgconfig"
+            export LDFLAGS="-L${pkgs.openssl.out}/lib"
+            export CPPFLAGS="-I${pkgs.openssl.dev}/include"
+            export OPENSSL_DIR="${pkgs.openssl.dev}"
+
+            export PKG_CONFIG_PATH="${pkgs.libyaml.dev or pkgs.libyaml}/lib/pkgconfig:$PKG_CONFIG_PATH"
+            export YAML_DIR="${pkgs.libyaml.dev or pkgs.libyaml}/lib"
 
             # Install the specific bundler version
             if ! gem list -i "^bundler$" -v "2.6.6" > /dev/null; then
