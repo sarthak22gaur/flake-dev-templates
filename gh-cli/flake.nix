@@ -19,8 +19,8 @@
           ];
 
           shellHook = ''
-            # Expect RUBY_PAT_DIR to be set by direnv or your shell
-            # e.g. export RUBY_PAT_DIR="work/github/rubygems-pat"
+            # Expect GH_TOKEN_DIR to be set by direnv
+            # e.g. export GH_TOKEN_DIR="work/github/gh-cli-token"
             if [ -n "$GH_TOKEN_DIR" ]; then
               GH_TOKEN="$(pass "$GH_TOKEN_DIR")"
               GITHUB_TOKEN="$(pass "$GH_TOKEN_DIR")"

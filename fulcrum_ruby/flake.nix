@@ -4,7 +4,7 @@
   # Use nixos-unstable for most packages
   inputs.nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
 
-  # Pin a separate nixpkgs version for Ruby 3.3.0
+  # Pin nixpkgs to a revision that provides Ruby 3.3.0 (required by Fulcrum)
   inputs.rubyNixpkgs.url = "github:NixOS/nixpkgs/e89cf1c932006531f454de7d652163a9a5c86668";
 
   outputs = { self, nixpkgs, rubyNixpkgs }:
@@ -22,7 +22,7 @@
             (rubyPkgs.ruby_3_3)
             libpq postgresql redis libxml2 libxslt zlib gcc xz libyaml
             pkg-config
-            openssl   # <-- Add this line!
+            openssl
           ];
           shellHook = ''
             # Ensure Bundler installs gems into this project's vendor/bundle directory
