@@ -13,7 +13,26 @@
     {
       devShells = forEachSupportedSystem ({ pkgs }: {
         default = pkgs.mkShell {
-          packages = with pkgs; [ tabview ];
+          packages = with pkgs; [
+            # Data/text processing
+            cloc
+            csvkit
+            jq
+            yq
+            miller
+            tabview
+
+            # File/system utilities
+            tree
+            tokei
+            dust
+            duf
+            hyperfine
+
+            # Networking
+            curlie
+            xh
+          ];
         };
       });
     };
