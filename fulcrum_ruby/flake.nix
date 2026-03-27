@@ -32,14 +32,12 @@
             export BUNDLE_BIN="$BUNDLE_PATH/bin"
             export PATH="$BUNDLE_BIN:$PATH"
 
-            # Make Puma and other gems see the right OpenSSL
+            # Native gem build flags
             export SSL_CERT_FILE=${pkgs.cacert}/etc/ssl/certs/ca-bundle.crt
-            export PKG_CONFIG_PATH="${pkgs.openssl.dev}/lib/pkgconfig"
-            export LDFLAGS="-L${pkgs.openssl.out}/lib"
-            export CPPFLAGS="-I${pkgs.openssl.dev}/include"
+            export PKG_CONFIG_PATH="${pkgs.openssl.dev}/lib/pkgconfig:${pkgs.libpq.dev or pkgs.libpq}/lib/pkgconfig:${pkgs.libyaml.dev or pkgs.libyaml}/lib/pkgconfig:$PKG_CONFIG_PATH"
+            export LDFLAGS="-L${pkgs.openssl.out}/lib -L${pkgs.libpq.out or pkgs.libpq}/lib"
+            export CPPFLAGS="-I${pkgs.openssl.dev}/include -I${pkgs.libpq.dev or pkgs.libpq}/include"
             export OPENSSL_DIR="${pkgs.openssl.dev}"
-
-            export PKG_CONFIG_PATH="${pkgs.libyaml.dev or pkgs.libyaml}/lib/pkgconfig:$PKG_CONFIG_PATH"
             export YAML_DIR="${pkgs.libyaml.dev or pkgs.libyaml}/lib"
 
             # Install the specific bundler version
